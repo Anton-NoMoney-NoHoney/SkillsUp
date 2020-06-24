@@ -37,10 +37,12 @@
 
     <modules>
         <module>MavenHometask</module>
+        <module>JavaPractice_task_junit</module>
     </modules>
 
     <properties>
         <superprop1>MavenHometask</superprop1>
+        <superprop1>JavaPractice_task_junit</superprop1>
     </properties>
 
 
