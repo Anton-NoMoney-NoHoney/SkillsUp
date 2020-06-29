@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class ExampleService implements ua.skillsup.practice.ExampleService {
 
-    public static final int AVERAGE = 2;
-    ExampleDao exampleDao=new ExampleDao();
-    HashSet uniqueNameToTitle=new HashSet();
+    protected static final BigDecimal AVERAGE = BigDecimal.valueOf(2);
+    protected ExampleDao exampleDao=new ExampleDao();
+    protected HashSet uniqueNameToTitle=new HashSet();
 
     @Override
     public void addNewItem(String title, BigDecimal price) throws ExampleNetworkException {
@@ -25,8 +25,9 @@ public class ExampleService implements ua.skillsup.practice.ExampleService {
                 entity.setDateIn(Clock.systemDefaultZone().instant());
                 entity.setPrice(price.setScale(2));
                 entity.setTitle(title);
-                exampleDao.store(entity);
-                uniqueNameToTitle.add(title);
+                if(exampleDao.store(entity)){
+                    uniqueNameToTitle.add(title);
+                }
             }
         }
     }
@@ -35,16 +36,21 @@ public class ExampleService implements ua.skillsup.practice.ExampleService {
     public Map<LocalDate, BigDecimal> getStatistic() {
         Map<LocalDate, BigDecimal> statisticAverageCost=new HashMap<>();
         List<ExampleEntity> exampleDaosList= exampleDao.findAll();
-        for(ExampleEntity entity: exampleDaosList){
-            LocalDate loc= Instant.ofEpochMilli(entity.getDateIn().getEpochSecond()*1000).atZone(ZoneId.systemDefault()).toLocalDate();
-            if(!statisticAverageCost.containsKey(loc)){
-                statisticAverageCost.put(loc,entity.getPrice());
-            }else{
-                BigDecimal oldAveragePrices=statisticAverageCost.get(loc);
-                BigDecimal newAveragePrices= entity.getPrice().add(oldAveragePrices).divide(BigDecimal.valueOf(AVERAGE));
-                statisticAverageCost.put(loc,newAveragePrices);
+        try {
+            for (ExampleEntity entity : exampleDaosList) {
+                LocalDate loc = Instant.ofEpochMilli(entity.getDateIn().getEpochSecond() * 1000).atZone(ZoneId.systemDefault()).toLocalDate();
+                if (!statisticAverageCost.containsKey(loc)) {
+                    statisticAverageCost.put(loc, entity.getPrice());
+                } else {
+                    BigDecimal oldAveragePrices = statisticAverageCost.get(loc);
+                    BigDecimal newAveragePrices = entity.getPrice().add(oldAveragePrices).divide(AVERAGE);
+                    statisticAverageCost.put(loc, newAveragePrices);
+                }
             }
+        }catch (NullPointerException ex){
+            return null;
         }
+
         if(!statisticAverageCost.isEmpty()){
             return statisticAverageCost;
         }else {
