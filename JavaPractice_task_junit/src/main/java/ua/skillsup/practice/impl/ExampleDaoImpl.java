@@ -4,19 +4,25 @@ import ua.skillsup.practice.ExampleEntity;
 import ua.skillsup.practice.ExampleNetworkException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-public class ExampleDao implements ua.skillsup.practice.ExampleDao {
+public class ExampleDaoImpl implements ua.skillsup.practice.ExampleDao {
 
 
-    private HashSet<ExampleEntity> entityListToSaveDao=new HashSet<>();
+    private List<ExampleEntity> entities =new ArrayList<>();
 
     @Override
     public boolean store(ExampleEntity entity) throws ExampleNetworkException {
-        if(!entityListToSaveDao.contains(entity)){
+        boolean save=true;
+        for(ExampleEntity iter: entities){
+            if(iter.getTitle().equals(entity.getTitle())){
+                save=false;
+                break;
+            }
+        }
+        if(save){
             try{
-                entityListToSaveDao.add(entity);
+                entities.add(entity);
             }catch (Exception ex){
                 throw new ExampleNetworkException();
             }
@@ -28,14 +34,11 @@ public class ExampleDao implements ua.skillsup.practice.ExampleDao {
 
     @Override
     public List<ExampleEntity> findAll() throws ExampleNetworkException {
-        if(entityListToSaveDao.isEmpty()){
-            return null;
-        }else{
-            try {
-                return (List<ExampleEntity>) new ArrayList<ExampleEntity>(entityListToSaveDao);
-            }catch (Exception ex){
-                throw new ExampleNetworkException();
-            }
+
+        try {
+            return (List<ExampleEntity>) new ArrayList<ExampleEntity>(entities);
+        }catch (Exception ex){
+            throw new ExampleNetworkException();
         }
     }
 }

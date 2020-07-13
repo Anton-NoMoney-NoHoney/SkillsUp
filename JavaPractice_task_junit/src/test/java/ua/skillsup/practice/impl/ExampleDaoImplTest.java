@@ -1,10 +1,14 @@
 package ua.skillsup.practice.impl;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 import ua.skillsup.practice.ExampleEntity;
 import ua.skillsup.practice.ExampleNetworkException;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -12,7 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
-public class ExampleDaoTest {
+public class ExampleDaoImplTest {
 
     /*jUnit TEST*/
     @Mock
@@ -20,10 +24,17 @@ public class ExampleDaoTest {
     @Mock
     private ArrayList<ExampleEntity> ResultList;
 
+    ExampleDaoImpl spy;
+    @Before public void initialize() {
+
+         spy=Mockito.spy(new ExampleDaoImpl());
+    }
+
+
     @Test
     public void shouldReturnTrueWhenAddComplited_Metod_store(){
         //GIVEN
-        ExampleDao dao=new ExampleDao();
+        ExampleDaoImpl dao=new ExampleDaoImpl();
         //WHEN
         boolean result=dao.store(entity);
         //THEN
@@ -31,20 +42,22 @@ public class ExampleDaoTest {
     }
 
     @Test
-    public void shouldReturnFalseWhenAddFailed_Metod_store(){
+    public void shouldNotStoreObjectWhichIsAlreadyPresentInDb(){
         //GIVEN
-        ExampleDao dao=new ExampleDao();
+
         //WHEN
-        dao.store(entity);
-        boolean result=dao.store(entity);
+        when(spy.store(any())).thenReturn(false);
+        boolean result= spy.store(entity);
         //THEN
         assertFalse(result);
     }
 
+
+
     @Test(expected = ExampleNetworkException.class)
     public void shouldReturnExceptionWhenDaoThrowException_Metod_store(){
         //GIVEN
-        ExampleDao spy= Mockito.spy(new ExampleDao());
+        ExampleDaoImpl spy= Mockito.spy(new ExampleDaoImpl());
         //WHEN
         when(spy.store(any())).thenThrow(new ExampleNetworkException());
         //THEN
@@ -54,7 +67,7 @@ public class ExampleDaoTest {
     @Test
     public void shouldReturnNULLWhenEntityListIsEmpty_Metod_findAll(){
         //GIVEN
-        ExampleDao spy= Mockito.spy(new ExampleDao());
+        ExampleDaoImpl spy= Mockito.spy(new ExampleDaoImpl());
         //WHEN
         when(spy.findAll()).thenReturn(null);
         List<ExampleEntity> res=spy.findAll();
@@ -66,7 +79,7 @@ public class ExampleDaoTest {
     @Test
     public void shouldReturnListWhenEntityListIsOK_Metod_findAll(){
         //GIVEN
-        ExampleDao spy= Mockito.spy(new ExampleDao());
+        ExampleDaoImpl spy= Mockito.spy(new ExampleDaoImpl());
         //WHEN
         when(spy.findAll()).thenReturn(ResultList);
         List<ExampleEntity> res=spy.findAll();
@@ -77,7 +90,7 @@ public class ExampleDaoTest {
     @Test(expected = ExampleNetworkException.class)
     public void shouldReturnExceptionWhenDaoThrowException_Metod_findAll(){
         //GIVEN
-        ExampleDao spy= Mockito.spy(new ExampleDao());
+        ExampleDaoImpl spy= Mockito.spy(new ExampleDaoImpl());
         //WHEN
         when(spy.findAll()).thenThrow(new ExampleNetworkException());
         //THEN
