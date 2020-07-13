@@ -30,6 +30,7 @@ public class ExampleServiceImplTest {
 
     private ExampleServiceImpl exampleService=new ExampleServiceImpl();
 
+
     @Mock
     ExampleServiceImpl service=spy(ExampleServiceImpl.class);
 
@@ -104,5 +105,6 @@ public class ExampleServiceImplTest {
         //THEN
         assertNull(statisticAverageCost);
     }
+
 
 }

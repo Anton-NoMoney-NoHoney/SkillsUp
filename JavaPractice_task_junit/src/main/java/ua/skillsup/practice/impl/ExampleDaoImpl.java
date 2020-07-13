@@ -8,7 +8,6 @@ import java.util.List;
 
 public class ExampleDaoImpl implements ua.skillsup.practice.ExampleDao {
 
-
     private List<ExampleEntity> entities =new ArrayList<>();
 
     @Override
@@ -23,6 +22,7 @@ public class ExampleDaoImpl implements ua.skillsup.practice.ExampleDao {
         if(save){
             try{
                 entities.add(entity);
+
             }catch (Exception ex){
                 throw new ExampleNetworkException();
             }

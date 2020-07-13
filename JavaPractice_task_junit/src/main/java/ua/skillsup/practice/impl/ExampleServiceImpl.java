@@ -25,6 +25,7 @@ public class ExampleServiceImpl implements ua.skillsup.practice.ExampleService  
         }
     }
 
+
     @Override
     public Map<LocalDate, BigDecimal> getStatistic() {
         Map<LocalDate, BigDecimal> statisticAverageCost=new HashMap<>();

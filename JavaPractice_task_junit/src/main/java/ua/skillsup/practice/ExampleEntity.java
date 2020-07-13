@@ -54,6 +54,7 @@ public class ExampleEntity {
 				Objects.equals(price, that.price);
 	}
 
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, title, dateIn, price);
