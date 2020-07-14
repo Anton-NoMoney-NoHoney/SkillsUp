@@ -35,9 +35,9 @@ public class ExampleDaoImpl implements ua.skillsup.practice.ExampleDao {
     @Override
     public List<ExampleEntity> findAll() throws ExampleNetworkException {
 
-        try {
+        if(!entities.isEmpty()){
             return (List<ExampleEntity>) new ArrayList<ExampleEntity>(entities);
-        }catch (Exception ex){
+        }else{
             throw new ExampleNetworkException();
         }
     }

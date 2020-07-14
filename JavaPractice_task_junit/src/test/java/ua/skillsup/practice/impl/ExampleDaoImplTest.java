@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 import ua.skillsup.practice.ExampleEntity;
 import ua.skillsup.practice.ExampleNetworkException;
+import ua.skillsup.practice.ExampleService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -57,7 +58,6 @@ public class ExampleDaoImplTest {
     @Test(expected = ExampleNetworkException.class)
     public void shouldReturnExceptionWhenDaoThrowException_Metod_store(){
         //GIVEN
-        ExampleDaoImpl spy= Mockito.spy(new ExampleDaoImpl());
         //WHEN
         when(spy.store(any())).thenThrow(new ExampleNetworkException());
         //THEN
@@ -67,7 +67,6 @@ public class ExampleDaoImplTest {
     @Test
     public void shouldReturnNULLWhenEntityListIsEmpty_Metod_findAll(){
         //GIVEN
-        ExampleDaoImpl spy= Mockito.spy(new ExampleDaoImpl());
         //WHEN
         when(spy.findAll()).thenReturn(null);
         List<ExampleEntity> res=spy.findAll();
@@ -79,7 +78,6 @@ public class ExampleDaoImplTest {
     @Test
     public void shouldReturnListWhenEntityListIsOK_Metod_findAll(){
         //GIVEN
-        ExampleDaoImpl spy= Mockito.spy(new ExampleDaoImpl());
         //WHEN
         when(spy.findAll()).thenReturn(ResultList);
         List<ExampleEntity> res=spy.findAll();
@@ -90,11 +88,10 @@ public class ExampleDaoImplTest {
     @Test(expected = ExampleNetworkException.class)
     public void shouldReturnExceptionWhenDaoThrowException_Metod_findAll(){
         //GIVEN
-        ExampleDaoImpl spy= Mockito.spy(new ExampleDaoImpl());
+        ExampleDaoImpl dao=new ExampleDaoImpl();
         //WHEN
-        when(spy.findAll()).thenThrow(new ExampleNetworkException());
         //THEN
-        spy.findAll();
+        dao.findAll();
 
     }
 
