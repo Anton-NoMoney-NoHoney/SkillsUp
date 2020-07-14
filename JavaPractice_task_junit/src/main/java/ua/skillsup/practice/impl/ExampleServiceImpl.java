@@ -12,12 +12,14 @@ import java.util.Map;
 
 public class ExampleServiceImpl implements ua.skillsup.practice.ExampleService  {
 
-    private static final int AVERAGE = 2;
-    private ExampleDaoImpl exampleDaoImpl =new ExampleDaoImpl();
-    private HashSet uniqueNameToTitle=new HashSet();
+    private final ExampleDaoImpl exampleDaoImpl =new ExampleDaoImpl();
+    private final HashSet uniqueNameToTitle=new HashSet();
 
     @Override
     public void addNewItem(String title, BigDecimal price) throws ExampleNetworkException {
+        if(title==null){
+            throw new ExampleNetworkException();
+        }
         if (price.compareTo(BigDecimal.valueOf(15.00)) == 1) {
             if (title.length() >= 3 && title.length() <= 20 && !uniqueNameToTitle.contains(title)) {
                 saveExamplEntity( title,  price);
@@ -29,16 +31,21 @@ public class ExampleServiceImpl implements ua.skillsup.practice.ExampleService  
     @Override
     public Map<LocalDate, BigDecimal> getStatistic() {
         Map<LocalDate, BigDecimal> statisticAverageCost=new HashMap<>();
+        Map<LocalDate, Integer> counterByDays=new HashMap<>();
+
         try{
-        List<ExampleEntity> exampleDaosList= exampleDaoImpl.findAll();
-            for(ExampleEntity entity: exampleDaosList){
+        List<ExampleEntity> exampleEntities= exampleDaoImpl.findAll();
+            for(ExampleEntity entity: exampleEntities){
+
                 LocalDate loc= Instant.ofEpochMilli(entity.getDateIn().getEpochSecond()*1000).atZone(ZoneId.systemDefault()).toLocalDate();
                 if(!statisticAverageCost.containsKey(loc)){
                     statisticAverageCost.put(loc,entity.getPrice());
+                    counterByDays.put(loc,1);
                 }else{
                     BigDecimal oldAveragePrices=statisticAverageCost.get(loc);
-                    BigDecimal newAveragePrices= entity.getPrice().add(oldAveragePrices).divide(BigDecimal.valueOf(AVERAGE));
+                    BigDecimal newAveragePrices= entity.getPrice().add(oldAveragePrices).divide(BigDecimal.valueOf(counterByDays.get(loc)+1));
                     statisticAverageCost.put(loc,newAveragePrices);
+                    counterByDays.put(loc,counterByDays.get(loc)+1);
                 }
             }
         }catch (Exception ex){

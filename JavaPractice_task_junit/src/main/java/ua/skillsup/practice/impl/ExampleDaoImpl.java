@@ -12,6 +12,12 @@ public class ExampleDaoImpl implements ua.skillsup.practice.ExampleDao {
 
     @Override
     public boolean store(ExampleEntity entity) throws ExampleNetworkException {
+
+        try{
+        entity.getTitle();
+        }catch (NullPointerException ex){
+            throw new ExampleNetworkException();
+        }
         boolean save=true;
         for(ExampleEntity iter: entities){
             if(iter.getTitle().equals(entity.getTitle())){
@@ -20,11 +26,7 @@ public class ExampleDaoImpl implements ua.skillsup.practice.ExampleDao {
             }
         }
         if(save){
-            try{
-                entities.add(entity);
-            }catch (Exception ex){
-                throw new ExampleNetworkException();
-            }
+            entities.add(entity);
             return true;
         }else{
             return false;

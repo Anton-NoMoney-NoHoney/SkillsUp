@@ -1,10 +1,9 @@
 package ua.skillsup.practice.impl;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import ua.skillsup.practice.ExampleNetworkException;
 
@@ -12,9 +11,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class ExampleServiceImplTest {
@@ -28,25 +26,25 @@ public class ExampleServiceImplTest {
     private static final BigDecimal NORMAL_PRICE_TO_STATISTIC = BigDecimal.valueOf(40);
     private static final BigDecimal AVERAGE = BigDecimal.valueOf(2);
 
-    private ExampleServiceImpl exampleService=new ExampleServiceImpl();
 
 
-    @Mock
-    ExampleServiceImpl service=spy(ExampleServiceImpl.class);
+    ExampleServiceImpl exampleService;
+    @Before public void init(){
+         exampleService=new ExampleServiceImpl();
+    }
+
 
     @Test(expected = ExampleNetworkException.class)
     public void shouldReturnExampleNetworkExceptionWhenEntityListIsEmpty_Metod_addNewItem() throws ExampleNetworkException{
         //GIVEN
         //WHEN
-        Mockito.doThrow(new ExampleNetworkException()).when(service).addNewItem(NORMAL_TITLE, NORMAL_PRICE);
         //THEN
-        service.addNewItem(NORMAL_TITLE, NORMAL_PRICE);
+        exampleService.addNewItem(null, NORMAL_PRICE);
     }
 
     @Test
     public void shouldIgnoreTitleWhenPriceIsSmall(){
         //GIVEN
-        ExampleServiceImpl exampleService=new ExampleServiceImpl();
         //WHEN
         exampleService.addNewItem(NORMAL_TITLE, SMALL_PRICE);
         //THEN
@@ -56,7 +54,6 @@ public class ExampleServiceImplTest {
     @Test
     public void shouldAddTitleWhenNormalTitleAndPrice(){
         //GIVEN
-        ExampleServiceImpl exampleService=new ExampleServiceImpl();
         //WHEN
         exampleService.addNewItem(NORMAL_TITLE, NORMAL_PRICE);
         //THEN
