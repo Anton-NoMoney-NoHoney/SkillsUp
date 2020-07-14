@@ -64,25 +64,17 @@ public class ExampleDaoImplTest {
         spy.store(any());
     }
 
-    @Test
-    public void shouldReturnNULLWhenEntityListIsEmpty_Metod_findAll(){
-        //GIVEN
-        //WHEN
-        when(spy.findAll()).thenReturn(null);
-        List<ExampleEntity> res=spy.findAll();
-        //THEN
-        assertNull(res);
-
-    }
 
     @Test
     public void shouldReturnListWhenEntityListIsOK_Metod_findAll(){
         //GIVEN
+        ExampleDaoImpl dao=new ExampleDaoImpl();
         //WHEN
-        when(spy.findAll()).thenReturn(ResultList);
-        List<ExampleEntity> res=spy.findAll();
+        dao.store(new ExampleEntity());
+        List<ExampleEntity> res=dao.findAll();
         //THEN
-        assertEquals(ResultList,res);
+        assertEquals(ResultList,null);
+        assertEquals(res.size(),1);
     }
 
     @Test(expected = ExampleNetworkException.class)
