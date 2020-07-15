@@ -4,6 +4,8 @@
 *.iws
 *.jar
 *.war
+*.js
 
 target/
 MavenHometask/target/
+/MavenHometask/MavenHometaskWeb/

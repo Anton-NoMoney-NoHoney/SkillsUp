@@ -36,6 +36,7 @@
 
 
     <modules>
+        <module>java8-tasks</module>
         <module>MavenHometask</module>
         <module>JavaPractice_task_junit</module>
     </modules>
