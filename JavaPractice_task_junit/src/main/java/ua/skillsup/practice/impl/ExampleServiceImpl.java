@@ -4,6 +4,7 @@ import ua.skillsup.practice.ExampleEntity;
 import ua.skillsup.practice.ExampleNetworkException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.*;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ public class ExampleServiceImpl implements ua.skillsup.practice.ExampleService  
                 saveExamplEntity( title,  price);
             }
         }
+
     }
 
 
@@ -36,17 +38,21 @@ public class ExampleServiceImpl implements ua.skillsup.practice.ExampleService  
         try{
         List<ExampleEntity> exampleEntities= exampleDaoImpl.findAll();
             for(ExampleEntity entity: exampleEntities){
-
                 LocalDate loc= Instant.ofEpochMilli(entity.getDateIn().getEpochSecond()*1000).atZone(ZoneId.systemDefault()).toLocalDate();
                 if(!statisticAverageCost.containsKey(loc)){
                     statisticAverageCost.put(loc,entity.getPrice());
                     counterByDays.put(loc,1);
                 }else{
                     BigDecimal oldAveragePrices=statisticAverageCost.get(loc);
-                    BigDecimal newAveragePrices= entity.getPrice().add(oldAveragePrices).divide(BigDecimal.valueOf(counterByDays.get(loc)+1));
+                    BigDecimal newAveragePrices= entity.getPrice().add(oldAveragePrices);
                     statisticAverageCost.put(loc,newAveragePrices);
                     counterByDays.put(loc,counterByDays.get(loc)+1);
                 }
+            }
+            for(Map.Entry<LocalDate, BigDecimal> g:statisticAverageCost.entrySet()){
+                BigDecimal h=g.getValue();
+                h=h.divide(BigDecimal.valueOf(counterByDays.get(g.getKey())),2, RoundingMode.HALF_UP);
+                statisticAverageCost.put(g.getKey(),h);
             }
         }catch (Exception ex){
             return null;
@@ -64,7 +70,7 @@ public class ExampleServiceImpl implements ua.skillsup.practice.ExampleService  
         entity.setDateIn(Clock.systemDefaultZone().instant());
         entity.setPrice(price.setScale(2));
         entity.setTitle(title);
-        exampleDaoImpl.store(entity);
-        uniqueNameToTitle.add(title);
+        if(exampleDaoImpl.store(entity)){
+            uniqueNameToTitle.add(title);}
     }
 }

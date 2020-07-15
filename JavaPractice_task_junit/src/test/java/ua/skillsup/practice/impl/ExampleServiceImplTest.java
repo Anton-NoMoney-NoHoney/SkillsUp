@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ua.skillsup.practice.ExampleNetworkException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -18,13 +19,19 @@ import static org.junit.Assert.assertNull;
 public class ExampleServiceImplTest {
 
     private static final String NORMAL_TITLE = "TEST";
+    private static final String NORMAL_TITLE1 = "TEST1";
+    private static final String NORMAL_TITLE2 = "TEST2";
+    private static final String NORMAL_TITLE3 = "TEST3";
     private static final BigDecimal NORMAL_PRICE = BigDecimal.valueOf(30);
+    private static final BigDecimal NORMAL_PRICE1 = BigDecimal.valueOf(31);
+    private static final BigDecimal NORMAL_PRICE2 = BigDecimal.valueOf(32);
+    private static final BigDecimal NORMAL_PRICE3 = BigDecimal.valueOf(33);
     private static final BigDecimal SMALL_PRICE = BigDecimal.ONE;
     private static final String SMALL_TITLE = "NO";
     private static final String LARGE_TITLE = "VeryVeryVeryVeryVeryVeryVeryVeryVeryLARGE_TITLE";
     private static final String NORMAL_TITLE_TO_STATISTIC = "TEST_1";
     private static final BigDecimal NORMAL_PRICE_TO_STATISTIC = BigDecimal.valueOf(40);
-    private static final BigDecimal AVERAGE = BigDecimal.valueOf(2);
+    private static final BigDecimal AVERAGE = BigDecimal.valueOf(5);
 
 
 
@@ -82,8 +89,15 @@ public class ExampleServiceImplTest {
     public void shouldReturnStatisticWhenDataIssue(){
         //GIVEN
         exampleService.addNewItem(NORMAL_TITLE, NORMAL_PRICE);
+        exampleService.addNewItem(NORMAL_TITLE1, NORMAL_PRICE1);
+        exampleService.addNewItem(NORMAL_TITLE2, NORMAL_PRICE2);
+        exampleService.addNewItem(NORMAL_TITLE3, NORMAL_PRICE3);
         exampleService.addNewItem(NORMAL_TITLE_TO_STATISTIC, NORMAL_PRICE_TO_STATISTIC);
-        BigDecimal testAverage=NORMAL_PRICE.add(NORMAL_PRICE_TO_STATISTIC).divide(AVERAGE);
+        BigDecimal testAverage=NORMAL_PRICE.add(NORMAL_PRICE_TO_STATISTIC)
+                .add(NORMAL_PRICE1)
+                .add(NORMAL_PRICE2)
+                .add(NORMAL_PRICE3)
+                .divide(BigDecimal.valueOf(5),2, RoundingMode.HALF_UP);
         //WHEN
         Map<LocalDate, BigDecimal> statisticAverageCost=exampleService.getStatistic();
         BigDecimal average= BigDecimal.ZERO;
